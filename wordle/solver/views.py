@@ -22,10 +22,10 @@ def index(request):
         grey_letters = data['grey_letters']
 
         condition = Q(word__regex=r'{}'.format(green_letters))
-        if yellow_letters:  # include letters
-            condition &= Q(word__regex=r'[{}]'.format(yellow_letters))
-        if grey_letters:  # exclude letters
-            condition &= ~Q(word__regex=r'[{}]'.format(grey_letters))
+        for letter in yellow_letters:
+            condition &= Q(word__contains=letter)  # include letters
+        for letter in grey_letters:
+            condition &= ~Q(word__contains=letter)  # exclude a letter
 
         # FiveCharWord.objects.filter(condition)
         result = FiveCharWord.objects.filter(condition)
