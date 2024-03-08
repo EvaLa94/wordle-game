@@ -17,15 +17,12 @@ def index(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
 
-        green_letters = data['green_letters']
-        yellow_letters = data['yellow_letters']
-        grey_letters = data['grey_letters']
+        result_regex = data['result_regex']
 
-        condition = Q(word__regex=r'{}'.format(green_letters))
-        for letter in yellow_letters:
-            condition &= Q(word__contains=letter)  # include letters
-        for letter in grey_letters:
-            condition &= ~Q(word__contains=letter)  # exclude a letter
+        condition = Q(word__regex=r'{}'.format(result_regex))
+
+        for letter in data['must_include']:
+            condition &= Q(word__contains=letter)
 
         # FiveCharWord.objects.filter(condition)
         result = FiveCharWord.objects.filter(condition)
